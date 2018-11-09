@@ -4,14 +4,9 @@
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
-    "@automattic/muriel-base-components": {
-      "version": "file:packages/muriel-base-components",
-      "requires": {
-        "react": "^16.5.0"
-      }
-    },
     "@automattic/tree-select": {
       "version": "file:packages/tree-select",
+      "resolved": false,
       "requires": {
         "lodash": "^4.17.0"
       },
