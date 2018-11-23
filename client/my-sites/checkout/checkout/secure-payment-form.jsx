@@ -8,6 +8,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import { get, find, defer } from 'lodash';
 import { connect } from 'react-redux';
+import config from config;
 
 /**
  * Internal dependencies
@@ -27,13 +28,19 @@ import analytics from 'lib/analytics';
 import TransactionStepsMixin from './transaction-steps-mixin';
 import { setPayment } from 'lib/upgrades/actions';
 import debugFactory from 'debug';
-import cartValues, { isPaidForFullyInCredits, isFree, cartItems } from 'lib/cart-values';
+import cartValues, {
+	isPaidForFullyInCredits,
+	isFree,
+	cartItems,
+	hasPendingPayment,
+} from 'lib/cart-values';
 import Notice from 'components/notice';
 import { preventWidows } from 'lib/formatting';
 import PaymentBox from './payment-box';
 import isPresalesChatAvailable from 'state/happychat/selectors/is-presales-chat-available';
 import getCountries from 'state/selectors/get-countries';
 import QueryPaymentCountries from 'components/data/query-countries/payments';
+import PendingPaymentBlocker from './pending-payment-blocker';
 
 /**
  * Module variables
@@ -64,7 +71,9 @@ const SecurePaymentForm = createReactClass( {
 	getVisiblePaymentBox( cart, paymentMethods ) {
 		let i;
 
-		if ( isPaidForFullyInCredits( cart ) ) {
+		if ( config.isEnabled( 'async-payments' ) && hasPendingPayment( cart ) ) {
+			return 'pending-payment-blocker';
+		} else if ( isPaidForFullyInCredits( cart ) ) {
 			return 'credits';
 		} else if ( isFree( cart ) ) {
 			return 'free-cart';
@@ -370,6 +379,8 @@ const SecurePaymentForm = createReactClass( {
 		debug( 'getting %o payment box ...', visiblePaymentBox );
 
 		switch ( visiblePaymentBox ) {
+			case 'pending-payment-blocker':
+				return <PendingPaymentBlocker />;
 			case 'credits':
 				return this.renderCreditsPaymentBox();
 
