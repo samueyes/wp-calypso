@@ -80,7 +80,7 @@
 		color: $gray;
 	}
 	&:hover .gridicons-help-outline {
-		color: $blue-wordpress;
+		color: var( --color-primary );
 	}
 }
 

@@ -55,7 +55,7 @@
 	text-align: center;
 
 	.gridicon {
-		color: $blue-wordpress;
+		color: var( --color-primary );
 	}
 }
 
@@ -203,7 +203,7 @@
 }
 
 .login__social-connect-prompt-logo.wordpress {
-	color: $blue-wordpress;
+	color: var( --color-primary );
 }
 
 .login__social-connect-prompt-message {

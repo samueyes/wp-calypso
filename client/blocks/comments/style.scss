@@ -104,7 +104,7 @@
 
 	button:focus {
 		outline: dotted 1px $blue-medium;
-		color: $blue-wordpress;
+		color: var( --color-primary );
 	}
 
 	.comments__cancel-reply {
@@ -209,7 +209,7 @@
 
 	button:focus {
 		outline: dotted 1px $blue-medium;
-		color: $blue-wordpress;
+		color: var( --color-primary );
 	}
 
 	.comments__cancel-reply {
