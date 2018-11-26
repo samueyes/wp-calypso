@@ -349,7 +349,7 @@
 	}
 
 	&.is-following .follow-button__label {
-		color: $alert-green;
+		color: var( --color-success );
 	}
 }
 

@@ -36,12 +36,12 @@ button.follow-button {
 
 		.gridicons-reader-following {
 			display: inline-block;
-			fill: $alert-green;
+			fill: var( --color-success );
 			pointer-events: auto;
 		}
 
 		.follow-button__label {
-			color: $alert-green;
+			color: var( --color-success );
 		}
 
 		// Hides Follow icon if already following
@@ -51,10 +51,10 @@ button.follow-button {
 		}
 
 		&:hover {
-			color: $alert-green;
+			color: var( --color-success );
 
 			.gridicons-reader-following {
-				fill: $alert-green;
+				fill: var( --color-success );
 			}
 		}
 	}

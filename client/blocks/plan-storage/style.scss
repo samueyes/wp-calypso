@@ -29,7 +29,7 @@
 }
 
 .plan-storage__bar .progress-bar__progress {
-	background-color: $alert-green;
+	background-color: var( --color-success );
 }
 
 .plan-storage__bar.is-warn .progress-bar__progress {
