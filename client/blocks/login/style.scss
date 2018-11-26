@@ -113,7 +113,7 @@
 }
 
 .login-buttons__service-error {
-	color: $alert-red;
+	color: var( --color-error );
 	font-size: 11px;
 	margin: 0 10px 10px;
 }

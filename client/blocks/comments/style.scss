@@ -252,7 +252,7 @@
 		}
 
 		.comments__form-textarea {
-			border-color: $alert-red;
+			border-color: var( --color-error );
 		}
 	}
 

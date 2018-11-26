@@ -57,7 +57,7 @@
 
 .eligibility-warnings__hold .gridicon,
 .eligibility-warnings__warning > .gridicon {
-	color: $alert-red;
+	color: var( --color-error );
 	flex-shrink: 0;
 }
 

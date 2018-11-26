@@ -84,16 +84,16 @@
 	}
 
 	&.has-sticker {
-		color: $alert-red;
+		color: var( --color-error );
 
 		.gridicon {
-			fill: $alert-red;
+			fill: var( --color-error );
 		}
 
 		&:hover,
 		&:focus {
 			color: $white;
-			background: $alert-red;
+			background: var( --color-error );
 
 			.gridicon {
 				fill: $white;
