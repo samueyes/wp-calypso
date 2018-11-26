@@ -279,7 +279,7 @@
 	margin-left: -2px;
 
 	&:hover {
-		color: $blue-light;
+		color: var( --color-primary-light );
 	}
 }
 
@@ -371,7 +371,7 @@ a.comments__comment-username {
 	height: 21px;
 
 	&:hover {
-		color: $blue-light;
+		color: var( --color-primary-light );
 	}
 }
 
@@ -535,7 +535,7 @@ a.comments__comment-username {
 	margin-bottom: 15px !important; // to overwrite 10px value
 
 	&:hover {
-		color: $blue-light;
+		color: var( --color-primary-light );
 	}
 }
 

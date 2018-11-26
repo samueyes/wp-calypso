@@ -171,10 +171,10 @@
 			height: auto;
 
 			&.is-open.has-focus {
-				box-shadow: 0 0 0 1px var( --color-primary ), 0 0 0 6px $blue-light;
+				box-shadow: 0 0 0 1px var( --color-primary ), 0 0 0 6px var( --color-primary-light );
 
 				@include breakpoint( '>660px' ) {
-					box-shadow: 0 0 0 1px var( --color-primary ), 0 0 0 4px $blue-light;
+					box-shadow: 0 0 0 1px var( --color-primary ), 0 0 0 4px var( --color-primary-light );
 				}
 			}
 
@@ -191,7 +191,7 @@
 
 			.search__icon-navigation:focus {
 				border-radius: 3px;
-				box-shadow: 0 0 0 3px $blue-light;
+				box-shadow: 0 0 0 3px var( --color-primary-light );
 			}
 		}
 	}

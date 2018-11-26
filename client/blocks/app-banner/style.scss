@@ -2,7 +2,7 @@
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	background-color: $blue-light;
+	background-color: var( --color-primary-light );
 	color: $blue-dark;
 	/* Needed for banner to appear in front of notifications panel. */
 	z-index: z-index( 'root', '.app-banner' );

@@ -20,7 +20,7 @@
 	white-space: nowrap;
 
 	&:hover {
-		color: $blue-light;
+		color: var( --color-primary-light );
 	}
 
 	&::after {

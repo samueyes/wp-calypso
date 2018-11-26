@@ -23,7 +23,7 @@
 	font-family: $sans;
 
 	&:hover {
-		color: $blue-light;
+		color: var( --color-primary-light );
 	}
 }
 

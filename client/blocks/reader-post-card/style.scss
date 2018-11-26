@@ -394,7 +394,7 @@
 	cursor: pointer;
 
 	&:hover {
-		color: $blue-light;
+		color: var( --color-primary-light );
 	}
 
 	&:visited {
