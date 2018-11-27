@@ -20743,9 +20743,9 @@
       "integrity": "sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g="
     },
     "tinymce": {
-      "version": "4.8.5",
-      "resolved": "https://registry.npmjs.org/tinymce/-/tinymce-4.8.5.tgz",
-      "integrity": "sha512-1V6+PxP5Kp8H/Kuf+EOe6vyrtj1Dlj98q33DgiKGoGPTmbcQaVZWiT+lhqj8ICXKVLV3YxAieOJyJXai4SLHQg=="
+      "version": "4.9.0",
+      "resolved": "https://registry.npmjs.org/tinymce/-/tinymce-4.9.0.tgz",
+      "integrity": "sha512-hrPeCLXY/sVCo3i64CTW8P5xbDiEI8Uii/vWpcmQWAMhex6GWWd2U+L8WIMj5tKKGdfcIQAJfpfQthc/92bcKw=="
     },
     "tinyqueue": {
       "version": "1.2.3",
