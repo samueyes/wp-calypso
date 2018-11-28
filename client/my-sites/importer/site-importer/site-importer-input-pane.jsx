@@ -377,8 +377,10 @@ class SiteImporterInputPane extends React.Component {
 		debug( { importStage: this.state.importStage } );
 		// forcePreviewLoadingState here is a word-around of an issue where
 		// we would otherwise see a flicker of the site preview.
+		const importerState = get( this.props, 'importerStatus.importerState' );
 		const forcePreviewLoadingState =
-			get( this.props, 'importerStatus.importerState' ) === appStates.UPLOAD_SUCCESS;
+			importerState === appStates.UPLOAD_SUCCESS ||
+			( importerState === appStates.READY_FOR_UPLOAD && this.state.importStage === 'idle' );
 
 		return (
 			<div className="site-importer__site-importer-pane">
