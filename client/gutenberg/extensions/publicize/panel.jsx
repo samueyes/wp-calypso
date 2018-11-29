@@ -42,7 +42,7 @@ const PublicizePanel = ( { connections, refreshConnections } ) => (
 				</span>
 			}
 		>
-			<div>{ __( 'Connect and select social media services to share this post.' ) }</div>
+			<div>{ __( "Connect and select the accounts where you'd like to share your post." ) }</div>
 			{ connections &&
 				connections.length > 0 && <PublicizeForm refreshCallback={ refreshConnections } /> }
 			{ connections &&
