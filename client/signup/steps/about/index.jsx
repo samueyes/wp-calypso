@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { localize } from 'i18n-calypso';
 import { connect } from 'react-redux';
-import { invoke, noop, findKey, includes } from 'lodash';
+import { get, debounce, invoke, noop, findKey, includes } from 'lodash';
 import classNames from 'classnames';
 
 /**
@@ -33,6 +33,12 @@ import PressableStoreStep from '../design-type-with-store/pressable-store';
 import { abtest } from 'lib/abtest';
 import { isUserLoggedIn } from 'state/current-user/selectors';
 import { getSiteTypePropertyValue } from 'lib/signup/site-type';
+import QueryDomainsSuggestions from 'components/data/query-domains-suggestions';
+import {
+	getDomainsSuggestions,
+	isRequestingDomainsSuggestions,
+} from 'state/domains/suggestions/selectors';
+import userFactory from 'lib/user';
 
 //Form components
 import Card from 'components/card';
@@ -52,6 +58,12 @@ import SuggestionSearch from 'components/suggestion-search';
  */
 import './style.scss';
 
+const user = userFactory();
+
+function filterAlphaNumericChars( str ) {
+	return str.replace( /[^\w\u0080-\u017f]+/g, '' );
+}
+
 class AboutStep extends Component {
 	constructor( props ) {
 		super( props );
@@ -60,12 +72,15 @@ class AboutStep extends Component {
 			isValidLandingPageVertical( props.siteTopic ) &&
 			props.queryObject.vertical === props.siteTopic;
 		this.state = {
+			needToQueryDomains: false,
+			queryObject: null,
 			siteTopicValue: this.props.siteTopic,
 			userExperience: this.props.userExperience,
 			showStore: false,
 			pendingStoreClick: false,
 			hasPrepopulatedVertical,
 		};
+		this.debouncedSetSiteTitle = debounce( this.setSiteTitle, 500 );
 	}
 
 	componentDidMount() {
@@ -98,6 +113,16 @@ class AboutStep extends Component {
 		this._isMounted = false;
 	}
 
+	UNSAFE_componentWillReceiveProps( nextProps ) {
+		const { domainSuggestions } = this.props;
+
+		if ( nextProps.domainSuggestions !== domainSuggestions ) {
+			this.setState( { needToQueryDomains: false } );
+		}
+	}
+
+	setSiteTitle = title => this.props.setSiteTitle && this.props.setSiteTitle( title );
+
 	setFormState = state => this._isMounted && this.setState( { form: state } );
 
 	setPressableStore = ref => ( this.pressableStore = ref );
@@ -112,6 +137,12 @@ class AboutStep extends Component {
 	};
 
 	handleChangeEvent = event => {
+		this.debouncedSetSiteTitle( event.target.value );
+
+		this.setState( {
+			needToQueryDomains: true,
+		} );
+
 		this.formStateController.handleFieldChange( {
 			name: event.target.name,
 			value: event.target.value,
@@ -171,6 +202,7 @@ class AboutStep extends Component {
 			stepName,
 			flowName,
 			shouldHideSiteGoals,
+			shouldProvideDomain,
 			previousFlowName,
 			translate,
 			siteType,
@@ -280,11 +312,22 @@ class AboutStep extends Component {
 			return;
 		}
 
+		let domainArgs = {};
+		if ( shouldProvideDomain ) {
+			const suggestion = this.props.domainSuggestions[ 0 ];
+			domainArgs = {
+				suggestion,
+				siteUrl: suggestion.domain_name.replace( '.wordpress.com', '' ),
+				isPurchasingItem: false,
+			};
+		}
+
 		//Create site
 		SignupActions.submitSignupStep(
 			{
 				processingMessage: translate( 'Collecting your information' ),
-				stepName: stepName,
+				stepName,
+				...domainArgs,
 			},
 			[],
 			{
@@ -292,6 +335,7 @@ class AboutStep extends Component {
 				siteTitle: siteTitleValue,
 				designType: designType,
 				surveyQuestion: siteTopicInput,
+				...( shouldProvideDomain && { domainItem: undefined } ),
 			}
 		);
 
@@ -457,8 +501,26 @@ class AboutStep extends Component {
 		return ! hasPrepopulatedVertical && ! includes( steps, 'site-topic' );
 	}
 
+	canSubmit() {
+		if ( ! this.props.shouldProvideDomain ) {
+			return true;
+		}
+
+		if ( this.state.needToQueryDomains || this.props.isRequestingDomainsSuggestions ) {
+			return false;
+		}
+
+		return get( this.props, 'domainSuggestions.length', 0 ) > 0;
+	}
+
 	renderContent() {
-		const { translate, siteTitle, shouldHideSiteGoals } = this.props;
+		const {
+			translate,
+			queryObject,
+			siteTitle,
+			shouldHideSiteGoals,
+			shouldProvideDomain,
+		} = this.props;
 
 		const pressableWrapperClassName = classNames( 'about__pressable-wrapper', {
 			'about__wrapper-is-hidden': ! this.state.showStore,
@@ -470,6 +532,8 @@ class AboutStep extends Component {
 
 		return (
 			<div className="about__wrapper">
+				{ shouldProvideDomain &&
+					queryObject.query && <QueryDomainsSuggestions { ...queryObject } /> }
 				<div className={ pressableWrapperClassName }>
 					<PressableStoreStep
 						{ ...this.props }
@@ -532,7 +596,7 @@ class AboutStep extends Component {
 							{ this.renderExperienceOptions() }
 
 							<div className="about__submit-wrapper">
-								<Button primary={ true } type="submit">
+								<Button primary={ true } type="submit" disabled={ ! this.canSubmit() }>
 									{ translate( 'Continue' ) }
 								</Button>
 							</div>
@@ -567,16 +631,29 @@ class AboutStep extends Component {
 }
 
 export default connect(
-	( state, ownProps ) => ( {
-		siteTitle: getSiteTitle( state ),
-		siteGoals: getSiteGoals( state ),
-		siteTopic: getSurveyVertical( state ),
-		userExperience: getUserExperience( state ),
-		siteType: getSiteType( state ),
-		isLoggedIn: isUserLoggedIn( state ),
-		shouldHideSiteGoals:
-			'onboarding' === ownProps.flowName && includes( ownProps.steps, 'site-type' ),
-	} ),
+	( state, ownProps ) => {
+		const siteTitle = getSiteTitle( state );
+		const queryObject = {
+			query: filterAlphaNumericChars( siteTitle ) || get( user.get(), 'username' ),
+			vendor: 'domainsbot',
+			onlyWpcom: true,
+			quantity: 1,
+		};
+
+		return {
+			siteTitle,
+			siteGoals: getSiteGoals( state ),
+			siteTopic: getSurveyVertical( state ),
+			userExperience: getUserExperience( state ),
+			siteType: getSiteType( state ),
+			isLoggedIn: isUserLoggedIn( state ),
+			shouldHideSiteGoals:
+				'onboarding' === ownProps.flowName && includes( ownProps.steps, 'site-type' ),
+			queryObject,
+			domainSuggestions: getDomainsSuggestions( state, queryObject ),
+			isRequestingDomainsSuggestions: isRequestingDomainsSuggestions( state, queryObject ),
+		};
+	},
 	{
 		setSiteTitle,
 		setDesignType,

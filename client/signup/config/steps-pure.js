@@ -119,6 +119,28 @@ export function generateSteps( {
 		about: {
 			stepName: 'about',
 			providesDependencies: [ 'designType', 'themeSlugWithRepo', 'siteTitle', 'surveyQuestion' ],
+			props: {
+				shouldProvideDomain: false,
+			},
+		},
+
+		'about-with-domains': {
+			stepName: 'about-with-domains',
+			apiRequestFunction: createSiteWithCart,
+			providesDependencies: [
+				'designType',
+				'themeSlugWithRepo',
+				'siteTitle',
+				'surveyQuestion',
+				'siteId',
+				'siteSlug',
+				'domainItem',
+				'themeItem',
+			],
+			props: {
+				shouldProvideDomain: true,
+			},
+			delayApiRequestUntilComplete: true,
 		},
 
 		user: {

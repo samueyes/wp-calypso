@@ -38,6 +38,7 @@ import ReaderLandingStepComponent from 'signup/steps/reader-landing';
 
 export default {
 	about: AboutStepComponent,
+	'about-with-domains': AboutStepComponent,
 	'clone-start': CloneStartComponent,
 	'clone-destination': CloneDestinationComponent,
 	'clone-credentials': CloneCredentialsComponent,
